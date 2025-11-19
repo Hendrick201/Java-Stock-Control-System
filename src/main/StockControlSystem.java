@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import inventoy.Product;
-import inventoy.Stock;
+import inventory.Product;
+import inventory.Stock;
 
 public class StockControlSystem {
 
