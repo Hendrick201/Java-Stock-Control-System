@@ -14,7 +14,16 @@ public class Stock {
 	}
 	public Stock(String stockName, List<Stock> mainStockList) {
 		this.stockName = stockName;	
-		setStockId(mainStockList);
+		if(mainStockList != null)
+		{
+			setStockId(mainStockList);
+		}
+			
+		else
+		{
+			this.stockId = 0;  ///TO-DO implementar logica de stockid
+		}
+			
 	}
 	public String getStockName() {
 		return stockName;
@@ -31,7 +40,7 @@ public class Stock {
 			this.stockId = mainStockList.size();
 		else
 			this.stockId = 0;
-		// To-do adicionar logica pro Stock identificar o proprio Id dentro da lista de Stocks
+		// To-do adicionar logica pro Stock identificar o proprio Id dentro da lista de Stocks salva localmente
 	}
 	public List<Product> getProductsList() {
 		return products;
@@ -42,7 +51,7 @@ public class Stock {
 	}
 	public void removeProduct(Product product)
 	{
-		
+		products.remove(product);
 	}
 	public void searchProduct(String name)
 	{
