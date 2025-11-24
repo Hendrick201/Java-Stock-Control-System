@@ -1,4 +1,4 @@
-package main;
+package application;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,8 +17,9 @@ import java.util.Scanner;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import inventory.Product;
-import inventory.Stock;
+import entities.Product;
+import entities.Stock;
+import services.InputValidador;
 
 public class StockControlSystem {
 
@@ -59,7 +60,8 @@ public class StockControlSystem {
 		try (BufferedReader br = new BufferedReader(new FileReader(finalPath))) {
 			Type listType = new TypeToken<List<Stock>>() {
 			}.getType();
-			return gson.fromJson(br, listType);
+			  List<Stock> loadedList = gson.fromJson(br, listType);
+		        return (loadedList != null) ? loadedList : new ArrayList<Stock>();
 		} catch (IOException e) {
 			try {
 				File file = new File(finalPath);
@@ -85,7 +87,7 @@ public class StockControlSystem {
 		System.out.println("7 -  List all Stocks");
 		System.out.println("8 -  Edit a Stock");
 		System.out.println("9 -  Delet a Stock");
-		int option = readInt(sc);
+		int option = InputValidador.readInt(sc);
 
 		switch (option) // TO-DO adicionar todos os cases do menu aqui
 		{
@@ -146,7 +148,7 @@ public class StockControlSystem {
 			for (Stock stock : stockList) {
 				System.out.println(stock.toString());
 			}
-			Integer stockId = readInt(sc);
+			Integer stockId = InputValidador.readInt(sc);
 			if (stockId < 0 || (stockId > stockList.get(stockList.size() - 1).getStockId())) {
 				System.out.println("Invalid number! Please type a valid number.");
 				return selectStock(sc);
@@ -166,7 +168,7 @@ public class StockControlSystem {
 
 			if (stock.getProductsList().size() > 0) {
 				System.out.println("Enter the product id: ");
-				Integer productId = readInt(sc);
+				Integer productId = InputValidador.readInt(sc);
 				for (Product product : stock.getProductsList()) {
 					if (product.getProductId().equals(productId)) {
 						return product;
@@ -194,22 +196,22 @@ public class StockControlSystem {
 			String productName = sc.nextLine();
 			Integer productId = stock.getProductsList().size(); // TO-DO adicionar uma forma de não repetir os ID
 			System.out.println("Enter the product price: ");
-			Double productPrice = readDouble(sc);
+			Double productPrice = InputValidador.readDouble(sc);
 			while (productPrice <= 0) {
 				System.out.println("Please, enter a value bigger than 0!");
-				productPrice = readDouble(sc);
+				productPrice = InputValidador.readDouble(sc);
 			}
 			System.out.println("Enter the product quantity: ");
-			Integer productQuantity = readInt(sc);
+			Integer productQuantity = InputValidador.readInt(sc);
 			while (productQuantity <= 0) {
 				System.out.println("Please, enter a value bigger than 0!");
-				productQuantity = readInt(sc);
+				productQuantity = InputValidador.readInt(sc);
 			}
 			System.out.println("Enter the product lot number: ");
-			Integer productLotNumber = readInt(sc);
+			Integer productLotNumber = InputValidador.readInt(sc);
 			while (productLotNumber <= 0) {
 				System.out.println("Please, enter a value bigger than 0!");
-				productLotNumber = readInt(sc);
+				productLotNumber = InputValidador.readInt(sc);
 			}
 			stock.setProduct(
 					new Product(productName, productId, productPrice, productQuantity, new Date(), productLotNumber));
@@ -253,23 +255,5 @@ public class StockControlSystem {
 		stock.removeProduct(product);
 	}
 
-	private static int readInt(Scanner sc) {
-		while (true) {
-			try {
-				return Integer.parseInt(sc.nextLine());
-			} catch (NumberFormatException e) {
-				System.out.println("Invalid number! Please type a valid number.");
-			}
-		}
-	}
-
-	private static Double readDouble(Scanner sc) {
-		while (true) {
-			try {
-				return Double.parseDouble(sc.nextLine());
-			} catch (NumberFormatException e) {
-				System.out.println("Invalid value! Please type a valid number.");
-			}
-		}
-	}
+	
 }
