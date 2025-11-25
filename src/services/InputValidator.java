@@ -2,7 +2,7 @@ package services;
 
 import java.util.Scanner;
 
-public final class InputValidador {
+public final class InputValidator {
 	public static int readInt(Scanner sc) {
 		while (true) {
 			try {

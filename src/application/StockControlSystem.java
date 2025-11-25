@@ -19,7 +19,7 @@ import com.google.gson.reflect.TypeToken;
 
 import entities.Product;
 import entities.Stock;
-import services.InputValidador;
+import services.InputValidator;
 
 public class StockControlSystem {
 
@@ -87,7 +87,7 @@ public class StockControlSystem {
 		System.out.println("7 -  List all Stocks");
 		System.out.println("8 -  Edit a Stock");
 		System.out.println("9 -  Delet a Stock");
-		int option = InputValidador.readInt(sc);
+		int option = InputValidator.readInt(sc);
 
 		switch (option) // TO-DO adicionar todos os cases do menu aqui
 		{
@@ -99,6 +99,8 @@ public class StockControlSystem {
 			break;
 		case 3:
 			deleteProduct(sc);
+		case 4:
+			editProduct(sc);
 			break;
 		case 6:
 			stockList.add(createStock(sc));
@@ -106,7 +108,19 @@ public class StockControlSystem {
 		}
 		saveStockList(System.getProperty("user.dir"));
 	}
-
+	private void editProduct(Scanner sc)
+	{
+		Product product = selectProduct(sc);
+		System.out.println("Enter the field number you wish to edit: \n 0 = NAME \n 1 = PRICE \n 2 = QUANTITY");
+		Integer choice = InputValidator.readInt(sc);
+		switch(choice)
+		{
+		case 0:  System.out.println("Enter the New Product Name"); String productName = sc.nextLine(); product.setProductName(productName); break;
+		case 1:  System.out.println("Enter the New Product Price"); Double productPrice = InputValidator.readDouble(sc) ;product.setProductPrice(productPrice); break;
+		case 2:  System.out.println("Enter the New Product Quantity"); Integer productQuantity = InputValidator.readInt(sc); product.setProductQuantity(productQuantity); break;
+		}
+		menuEndPointReturn(sc);
+	}
 	private void deleteProduct(Scanner sc) {
 		if (stockList != null) {
 			Stock stock = selectStock(sc);
@@ -141,6 +155,7 @@ public class StockControlSystem {
 		}
 	}
 
+///Selects Product - Stock
 	private Stock selectStock(Scanner sc) {
 		if (stockList != null) {
 
@@ -148,9 +163,9 @@ public class StockControlSystem {
 			for (Stock stock : stockList) {
 				System.out.println(stock.toString());
 			}
-			Integer stockId = InputValidador.readInt(sc);
+			Integer stockId = InputValidator.readInt(sc);
 			if (stockId < 0 || (stockId > stockList.get(stockList.size() - 1).getStockId())) {
-				System.out.println("Invalid number! Please type a valid number.");
+				System.out.println("Invalid Stock number! Please type a valid number.");
 				return selectStock(sc);
 			}
 			return stockList.get(stockId);
@@ -168,11 +183,15 @@ public class StockControlSystem {
 
 			if (stock.getProductsList().size() > 0) {
 				System.out.println("Enter the product id: ");
-				Integer productId = InputValidador.readInt(sc);
+				Integer productId = InputValidator.readInt(sc);
 				for (Product product : stock.getProductsList()) {
-					if (product.getProductId().equals(productId)) {
-						return product;
+					while(!product.getProductId().equals(productId)) 
+					{
+						System.out.println("This product Id dont exists!\n");
+						System.out.println("Enter the product id: ");
+						productId = InputValidator.readInt(sc);
 					}
+						return product;	
 				}
 			} else {
 				System.out.println("Dont have any product in this Stock yet");
@@ -187,7 +206,6 @@ public class StockControlSystem {
 		}
 		return null;
 	}
-
 	private void createProduct(Scanner sc) {
 		if (stockList != null) {
 
@@ -196,22 +214,22 @@ public class StockControlSystem {
 			String productName = sc.nextLine();
 			Integer productId = stock.getProductsList().size(); // TO-DO adicionar uma forma de não repetir os ID
 			System.out.println("Enter the product price: ");
-			Double productPrice = InputValidador.readDouble(sc);
+			Double productPrice = InputValidator.readDouble(sc);
 			while (productPrice <= 0) {
 				System.out.println("Please, enter a value bigger than 0!");
-				productPrice = InputValidador.readDouble(sc);
+				productPrice = InputValidator.readDouble(sc);
 			}
 			System.out.println("Enter the product quantity: ");
-			Integer productQuantity = InputValidador.readInt(sc);
+			Integer productQuantity = InputValidator.readInt(sc);
 			while (productQuantity <= 0) {
 				System.out.println("Please, enter a value bigger than 0!");
-				productQuantity = InputValidador.readInt(sc);
+				productQuantity = InputValidator.readInt(sc);
 			}
 			System.out.println("Enter the product lot number: ");
-			Integer productLotNumber = InputValidador.readInt(sc);
+			Integer productLotNumber = InputValidator.readInt(sc);
 			while (productLotNumber <= 0) {
 				System.out.println("Please, enter a value bigger than 0!");
-				productLotNumber = InputValidador.readInt(sc);
+				productLotNumber = InputValidator.readInt(sc);
 			}
 			stock.setProduct(
 					new Product(productName, productId, productPrice, productQuantity, new Date(), productLotNumber));
